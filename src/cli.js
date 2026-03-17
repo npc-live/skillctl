@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import path from 'path'
+import fs from 'fs-extra'
 import chalk from 'chalk'
 import {
   listSkills, listCliTools, readRegistry,
@@ -102,13 +103,24 @@ async function main() {
       // clients list
       const registry = await readRegistry()
       console.log()
-      console.log(`  ${dim(pad('CLIENT', 20))}${dim(pad('STATUS', 12))}${dim('SKILLS DIR')}`)
       for (const [id, label] of Object.entries(CLIENT_LABELS)) {
         const enabled = registry?.clients?.[id]?.enabled ?? false
         const status = enabled ? ok('● enabled') : dim('○ disabled')
-        console.log(`  ${pad(label, 20)}${pad(status, 21)}${dim(CLIENT_SKILL_DIRS[id])}`)
+        const skillsDir = CLIENT_SKILL_DIRS[id]
+        const entries = await fs.readdir(skillsDir).catch(() => [])
+        const skills = (await Promise.all(
+          entries.map(async e => {
+            const s = await fs.lstat(path.join(skillsDir, e)).catch(() => null)
+            return s && (s.isDirectory() || s.isSymbolicLink()) ? e : null
+          })
+        )).filter(Boolean)
+        const countStr = skills.length > 0 ? hi(`(${skills.length})`) : dim('(0)')
+        console.log(`  ${hi(pad(label, 20))} ${status}  ${countStr}  ${dim(skillsDir)}`)
+        for (const name of skills) {
+          console.log(`    ${dim('·')} ${name}`)
+        }
+        console.log()
       }
-      console.log()
       break
     }
 
