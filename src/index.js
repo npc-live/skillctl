@@ -346,4 +346,6 @@ function App() {
   )
 }
 
-render(<App />)
+export function startTUI() {
+  render(<App />)
+}
