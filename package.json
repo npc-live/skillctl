@@ -1,0 +1,37 @@
+{
+  "name": "@harness/skillctl",
+  "version": "0.1.0",
+  "description": "Unified skill manager for Claude Code, Cursor, Windsurf, OpenCode, OpenClaw",
+  "type": "module",
+  "bin": {
+    "skillctl": "./src/index.js"
+  },
+  "scripts": {
+    "build": "esbuild src/index.js --bundle --platform=node --target=node18 --format=esm --loader:.js=jsx --jsx=automatic --external:ink --external:react --external:chalk --external:yaml --external:fs-extra --external:execa --outfile=dist/skillctl.mjs",
+    "start": "npm run build && node dist/skillctl.mjs",
+    "dev": "npm run build && node dist/skillctl.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "enquirer": "^2.4.1",
+    "execa": "^9.5.2",
+    "fs-extra": "^11.3.0",
+    "ink": "^5.1.0",
+    "ink-select-input": "^6.0.0",
+    "ink-text-input": "^6.0.0",
+    "ora": "^8.1.1",
+    "react": "^18.3.1",
+    "yaml": "^2.7.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/node": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
+    "@babel/preset-react": "^7.28.5",
+    "@babel/register": "^7.28.6",
+    "esbuild": "^0.27.4"
+  }
+}
